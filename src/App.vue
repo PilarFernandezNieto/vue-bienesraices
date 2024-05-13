@@ -1,5 +1,10 @@
 <script setup>
 import { RouterView } from 'vue-router'
+import { useAuthStore } from './stores/auth';
+
+const auth = useAuthStore();
+
+
 
 </script>
 
@@ -8,17 +13,21 @@ import { RouterView } from 'vue-router'
     <v-layout>
       <v-app-bar color="blue-darken-1">
         <template v-slot:prepend>
-          <v-btn :to="{name: 'home'}">
+          <v-btn :to="{ name: 'home' }">
             Bienes Raíces Vuefire
           </v-btn>
         </template>
         <template v-slot:append>
-          <v-btn :to="{name: 'home'}">
-            Inicio
-          </v-btn>
-          <v-btn :to="{ name: 'login' }">
-            Iniciar sesión
-          </v-btn>
+          <div v-if="auth.isAuth">
+            <v-btn :to="{ name: 'admin-propiedades' }">Admin</v-btn>
+            <v-btn @click="auth.logout" >Cerrar sesión</v-btn>
+          </div>
+          <div v-else>
+            <v-btn :to="{ name: 'home' }">Inicio</v-btn>
+            <v-btn :to="{ name: 'login' }">Iniciar sesión</v-btn>
+
+          </div>
+
         </template>
 
 
