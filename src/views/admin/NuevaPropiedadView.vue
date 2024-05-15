@@ -1,11 +1,19 @@
 <script setup>
+
 import { useField, useForm } from 'vee-validate';
 import { validationSchema, imageSchema } from '@/validation/propiedadSchema';
 import { collection, addDoc } from 'firebase/firestore';
 import { useFirestore } from 'vuefire';
 import { useRouter } from 'vue-router';
+import useImage from '@/composables/useImage';
+import useLocationMap from '@/composables/useLocationMap';
+import "leaflet/dist/leaflet.css";
+import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
+
 
 const items = [1, 2, 3, 4, 5]
+const { url, uploadImage, image } = useImage();
+const {zoom, center, pin} = useLocationMap();
 
 const db = useFirestore();
 const router = useRouter();
@@ -29,14 +37,16 @@ const alberca = useField("alberca", null, {
 })
 
 
-const submit = handleSubmit( async(values) => {
-    const {imagen, ...propiedad} = values
+const submit = handleSubmit(async (values) => {
+    const { imagen, ...propiedad } = values
 
     const docRef = await addDoc(collection(db, "propiedades"), {
-        ...propiedad
+        ...propiedad,
+        imagen: url.value,
+        ubicacion: center.value
     });
-    if(docRef.id){
-        router.push({name: 'admin-propiedades'})
+    if (docRef.id) {
+        router.push({ name: 'admin-propiedades' })
     }
 })
 
@@ -54,7 +64,14 @@ const submit = handleSubmit( async(values) => {
             <v-text-field class="mb-5" label="Título Propiedad" v-model="titulo.value.value"
                 :error-messages="titulo.errorMessage.value" />
             <v-file-input accept="image/jpeg" label="Foto" prepend-icon="mdi-camera" class="mb-5"
-                v-model="imagen.value.value" :error-messages="imagen.errorMessage.value" />
+                v-model="imagen.value.value" :error-messages="imagen.errorMessage.value" @change="uploadImage" />
+            <div v-if="image" class="my-5">
+                <p class="font-weight-bold">Imagen Propiedad</p>
+                <img :src="image" class="w-50">
+
+            </div>
+
+
             <v-text-field class="mb-5" label="Precio" v-model="precio.value.value"
                 :error-messages="precio.errorMessage.value" />
             <v-row>
@@ -74,6 +91,20 @@ const submit = handleSubmit( async(values) => {
             <v-textarea class="mb-5" label="Descripción" v-model="descripcion.value.value"
                 :error-messages="descripcion.errorMessage.value"></v-textarea>
             <v-checkbox label="Alberca" v-model="alberca.value.value" />
+
+
+            <h2 class="font-weight-bold text-center my-5">Ubicación</h2>
+            <div class="pb-10">
+                <div style="height:600px;">
+                    <LMap  v-model:zoom="zoom" :center="center" :use-global-leaflet="false">
+                        <LMarker :lat-lng="center" draggable @moveend="pin"/>
+                        <LTileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" ></LTileLayer>
+                    </LMap>
+                </div>
+            </div>
+
+
             <v-btn color="pink-accent-3" block @click="submit">Añadir Propiedad</v-btn>
 
         </v-form>
