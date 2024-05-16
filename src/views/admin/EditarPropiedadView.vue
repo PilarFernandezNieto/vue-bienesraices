@@ -48,10 +48,11 @@ watch(propiedad, (propiedad) => {
       alberca.value.value = propiedad.alberca
       center.value = propiedad.ubicacion
   })
-
+console.log(propiedad.ubicacion);
 const submit = handleSubmit(async values => {
 
    const {imagen, ...propiedad} = values
+   
    if(image.value){
     const data = {
         ...propiedad,
@@ -65,6 +66,7 @@ const submit = handleSubmit(async values => {
         ...propiedad,
         ubicacion: center.value
     }
+    console.log(data);
     await updateDoc(docRef, data)
    }
    router.push({name: "admin-propiedades"})

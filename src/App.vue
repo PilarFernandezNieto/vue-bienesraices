@@ -32,7 +32,7 @@ const auth = useAuthStore();
 
 
       </v-app-bar>
-      <v-main>
+      <v-main >
         <v-container>
           <RouterView />
         </v-container>
