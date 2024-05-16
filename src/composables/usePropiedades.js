@@ -7,8 +7,13 @@ export default function usePropiedades(){
     const db = useFirestore();
     const propiedadesCollection = useCollection(collection(db, "propiedades"))
 
-    const priceProperty = computed(() => {
-        console.log('Precio');
+    const propertyPrice = computed(() => {
+        return (price) => 
+            Number(price).toLocaleString("es-ES", {
+                style: "currency",
+                currency: "EUR"
+            })
+        
         
     })
 
@@ -17,7 +22,7 @@ export default function usePropiedades(){
     
     
     return {
-        priceProperty,
+        propertyPrice,
         propiedadesCollection
     }
 }

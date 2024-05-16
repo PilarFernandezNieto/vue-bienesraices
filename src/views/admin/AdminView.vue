@@ -1,9 +1,8 @@
 <script setup>
 import usePropiedades from '@/composables/usePropiedades';
 
-const {propiedadesCollection, priceProperty} = usePropiedades()
+const {propiedadesCollection, propertyPrice} = usePropiedades()
 
-console.log(propiedadesCollection);
 </script>
 
 <template>
@@ -20,16 +19,16 @@ console.log(propiedadesCollection);
                 :key="propiedad.id" 
             >
                 <template v-slot:prepend>
-                    <v-list-item-media start="true">
+                    <v-list-item-media :start="true">
                         <img width="180" :src="propiedad.imagen" alt="propiedad.titulo">
                     </v-list-item-media>
                
                 </template>
                 <v-list-item-title>{{ propiedad.titulo }}</v-list-item-title>
-                <v-list-item-subtitle>{{ priceProperty }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ propertyPrice(propiedad.precio) }}</v-list-item-subtitle>
 
                 <template v-slot:append>
-                    <v-btn color="info" variant="flat" class="mr-2">Editar</v-btn>
+                    <v-btn :to="{name: 'editar-propiedad', params: {id: propiedad.id}}" color="info" variant="flat" class="mr-2">Editar</v-btn>
                     <v-btn color="red-darken-3" variant="flat">Eliminar</v-btn>
             
                         
