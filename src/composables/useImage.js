@@ -8,10 +8,7 @@ export default function useImagen(){
     const storage = useFirebaseStorage();
     const storageRefPath = storageRef(storage, `/propiedades/${uid()}.jpg`)
 
-    const {
-        url,
-        upload
-    } = useStorageFile(storageRefPath)
+    const { url, upload } = useStorageFile(storageRefPath)
 
     function uploadImage(e){
         const data = e.target.files[0];
